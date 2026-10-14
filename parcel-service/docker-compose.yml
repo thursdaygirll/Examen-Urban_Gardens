@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: urban_gardens_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: urban_gardens
+      POSTGRES_USER: urban_user
+      POSTGRES_PASSWORD: urban_pass
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - urban-net
+
+  parcel-service:
+    build: .
+    container_name: parcel_service
+    restart: unless-stopped
+    ports:
+      - "8081:8081"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/urban_gardens
+      SPRING_DATASOURCE_USERNAME: urban_user
+      SPRING_DATASOURCE_PASSWORD: urban_pass
+    depends_on:
+      - postgres
+    networks:
+      - urban-net
+
+volumes:
+  postgres_data:
+
+networks:
+  urban-net:
+    driver: bridge
