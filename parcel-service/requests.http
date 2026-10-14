@@ -1,0 +1,120 @@
+### ============================================================
+###  Parcel Service — REST Client Tests
+###  Run each request by clicking "Send Request" above it
+### ============================================================
+
+@baseUrl = http://localhost:8081/api/v1
+
+# ----------------------------------------------------------------
+# 1. CREATE a parcel (should return 201)
+# ----------------------------------------------------------------
+### Create parcel — valid data
+POST {{baseUrl}}/parcels
+Content-Type: application/json
+
+{
+  "name": "Huerto Sur - Bloque B",
+  "location": {
+    "latitude": 19.432608,
+    "longitude": -99.133209
+  },
+  "soilType": "LIMOSO",
+  "ownerOrLead": "Carlos Mendoza"
+}
+
+# ----------------------------------------------------------------
+# 2. LIST all parcels (should return 200 + array)
+# ----------------------------------------------------------------
+### Get all parcels
+GET {{baseUrl}}/parcels
+
+# ----------------------------------------------------------------
+# 3. GET by ID — paste a real ID from the response above
+# ----------------------------------------------------------------
+### Get parcel by ID
+GET {{baseUrl}}/parcels/7996a220-1603-45aa-9840-a740c88521fb
+
+# ----------------------------------------------------------------
+# 4. ERROR CASES — validations & custom exceptions
+# ----------------------------------------------------------------
+
+### 400 — empty name
+POST {{baseUrl}}/parcels
+Content-Type: application/json
+
+{
+  "name": "",
+  "location": { "latitude": 19.4, "longitude": -99.1 },
+  "soilType": "ARCILLOSO",
+  "ownerOrLead": "Ana Ruiz"
+}
+
+###
+
+### 400 — latitude out of range (999)
+POST {{baseUrl}}/parcels
+Content-Type: application/json
+
+{
+  "name": "Parcela Invalida",
+  "location": { "latitude": 999.0, "longitude": -99.1 },
+  "soilType": "ARCILLOSO",
+  "ownerOrLead": "Ana Ruiz"
+}
+
+###
+
+### 400 — invalid soilType value
+POST {{baseUrl}}/parcels
+Content-Type: application/json
+
+{
+  "name": "Parcela Invalida",
+  "location": { "latitude": 19.4, "longitude": -99.1 },
+  "soilType": "TIERRA",
+  "ownerOrLead": "Ana Ruiz"
+}
+
+###
+
+### 409 — duplicate name (run Create first, then this)
+POST {{baseUrl}}/parcels
+Content-Type: application/json
+
+{
+  "name": "Huerto Sur - Bloque B",
+  "location": { "latitude": 20.1, "longitude": -98.5 },
+  "soilType": "ARENOSO",
+  "ownerOrLead": "Luis Torres"
+}
+
+###
+
+### 404 — parcel not found
+GET {{baseUrl}}/parcels/00000000-0000-0000-0000-000000000000
+
+###
+
+### 422 — coordinates outside operational area (Pacific Ocean)
+POST {{baseUrl}}/parcels
+Content-Type: application/json
+
+{
+  "name": "Parcela Oceano",
+  "location": { "latitude": 10.0, "longitude": 150.0 },
+  "soilType": "ARENOSO",
+  "ownerOrLead": "Pedro Gomez"
+}
+
+###
+
+### 422 — XSS attempt in name
+POST {{baseUrl}}/parcels
+Content-Type: application/json
+
+{
+  "name": "Huerto <script>alert(1)</script>",
+  "location": { "latitude": 19.4, "longitude": -99.1 },
+  "soilType": "ARCILLOSO",
+  "ownerOrLead": "Ana Ruiz"
+}
