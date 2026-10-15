@@ -62,6 +62,7 @@ public class ParcelServiceImpl implements ParcelService {
                 request.getLocation().getLatitude(),
                 request.getLocation().getLongitude()));
 
+        // all checks passed — safe to persist
         Parcel saved = parcelRepository.save(parcel);
         log.info("[PARCEL] Parcela creada exitosamente. id={} nombre='{}'", saved.getId(), saved.getName());
 
