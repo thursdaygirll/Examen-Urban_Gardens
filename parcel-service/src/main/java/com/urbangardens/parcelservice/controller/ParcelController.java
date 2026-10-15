@@ -49,7 +49,7 @@ public class ParcelController {
     public ResponseEntity<ParcelResponseDTO> createParcel(
             @Valid @RequestBody ParcelRequestDTO request) {
 
-        log.info("[HTTP] POST /api/v1/parcels — nombre='{}'", request.getName());
+        log.info("[HTTP] POST /api/v1/parcels — nombre='{}'", request.getName()); // @Valid runs before this method body executes
         ParcelResponseDTO created = parcelService.createParcel(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
