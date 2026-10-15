@@ -89,8 +89,8 @@ public final class SanitizationUtil {
             return; // Bean Validation ya lo captura con @NotNull
         }
 
-        // rough bounding box covering Latin America + Spain — not a precise border check,
-        // just a sanity guard against someone sending coordinates in the middle of the Pacific
+        // rough bounding box: Latin America + Spain
+        // not a strict border check — just blocks obviously wrong values like 0,0 or mid-Pacific
         boolean latOutOfRange = latitude < -60.0 || latitude > 40.0;
         boolean lonOutOfRange = longitude < -120.0 || longitude > 10.0;
 
